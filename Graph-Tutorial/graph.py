@@ -4,6 +4,8 @@
 A helper class for the Graph class that defines vertices and vertex neighbors.
 """
 
+import queue
+
 
 class Vertex(object):
 
@@ -90,6 +92,58 @@ class Graph:
     def get_vertices(self):
         """return all the vertices in the graph"""
         return self.vert_list.keys()
+
+    def breadth_first_search(self, vertex, n):
+        """ outputs all nodes that are exactly n connections away from the input node"""
+
+        '''
+        properties needed:
+            path of nodes array - to store all the current nodes that are n links away from given vertex
+            seen dictionary - dictionary that looks like: [vertex: length]
+            queue - which stores tuple object that look like: [(vertex, length)]
+
+        pseudocode:
+            - start by adding given vertex to the q, and to the seen dictionary
+            - loop through while the queue still has vertices
+                - pop the item off q and store it in a variable called 'curr'
+                - 'curr' is a tuple of (vertex, length)
+                - loop through neighbors of curr's vertex
+                    - if curr's length + 1 is the given length, we can append the neighbor! in to our path array
+                    - additionally, add this neighbor vertex and lenght + 1 to the queue, and the seen array
+
+            - after finding all the neighbors that have a length of the given length, we can return the path array
+        '''
+
+        path_nodes = []         # nodes that are n links away from vertex
+        seen = [:]              # dictionary of vertex and length that has been visited
+        q = queue.Queue()       # queue of tuples of vertex and it's length
+
+        # Push to the queue and update seen
+        q.push((self.vert_list[vertex], 0))
+        seen[self.vert_list[vertex]] = 0
+
+        while q:                # loop through the queue to get the vertex's neighbor
+            curr = q.pop()          # curr is = (vertex, length)
+            curr_vert = curr[0]     # curr_vert = vertex
+            curr_length = curr[1]   # curr_length = length
+
+            if curr_length > n:
+                break
+
+            for nei in curr_vert.get_neighbors():
+                if nei not in seen:
+                    if curr_length + 1 == n:        # this means the neighbor has met the right given length
+                        path_nodes.append(self.vert_list[nei])
+
+                    # increment the length in the dictionary, and enque the neighbor's value!!
+                    new_pair = (self.vert_list[nei], curr_length + 1)
+                    q.push(new_pair)
+
+                    # add it to seen as well
+                    seen[self.vert_list[nei]] = curr_length + 1
+
+        return path_nodes
+
 
     def __iter__(self):
         """Iterate over the vertex objects in the graph, to use sytax: for v in g"""
