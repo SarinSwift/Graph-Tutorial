@@ -1,11 +1,36 @@
 # CS-2.2-Labs
 
-## Your Social Network Graph Tutorial
-The starter code for this tutorial is in the tutorial folder.  
+## Social Network Graph Tutorial
+I will be using graph theory to solve a real world problem of finding connections - and recommending appropriate ones.  
+The following project will be about building a graph of my nine closest friends and use graph theory to figure out interesting data about them!  
 
-Follow these steps to create your own public repo for the tutorial:
+#### Learning outcomes
+1. Implement a graph in code.
+2. Use a variety of neighbor lookup algorithms for a given graph
+3. Traverse a graph through various search methods
 
-1. Clone this repo locally.
-1. On your GitHub, create an _empty_, public repository called Social-Network-Graph-Tutorial, and associate it as a remote for your cloned starter code, and then push to it.
-1. Go to your repo on GitHub and make sure your previously empty repo is now full with starter code! Now when you add/commit/push, it'll be to your repo!
-1. Update the README on your repo to reflect the work you have done.
+#### Graph representation of friends group
+
+[image of graph]
+
+#### Code implementation of the graph
+[graph.py](https://github.com/SarinSwift/Graph-Tutorial/blob/master/Graph-Tutorial/graph.py)
+
+The graph class:  
+```
+Graph()                              #creates a new, empty graph.
+add_vertex(vert)                     #adds an instance of vertex to the graph.
+add_edge(from_vert, to_vert)         #Adds a new, directed edge to the graph that connects two vertices.
+add_edge(from_vert, to_vert, weight) #Adds a new, weighted, directed edge to the graph that connects two vertices.
+get_vertex(vertKey)                  #finds the vertex in the graph named vertKey.
+get_vertices()                       #returns the list of all vertices in the graph.
+```
+
+The vertex class:  
+```
+Vertex(vertex)                  #creates a new, vertex object with initialized id and it's neighbors.
+add_neighbor(vertex, weight=0)  #adds a neighbor along a weighted edge.
+get_neighbors()                 #returns the neighbors of this vertex
+get_id()                        #returns the id of this vertex
+get_edge_weight(vertex)         #returns the weight of this edge
+```
