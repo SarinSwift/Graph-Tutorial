@@ -11,7 +11,7 @@ The following project will be about building a graph of my nine closest friends 
 
 #### Graph representation of friends group
 
-[image of graph]
+<img src="Image from iOS (8).jpg" width="350" height="280" />
 
 #### Code implementation of the graph
 [graph.py](https://github.com/SarinSwift/Graph-Tutorial/blob/master/Graph-Tutorial/graph.py)
