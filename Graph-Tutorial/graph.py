@@ -115,7 +115,7 @@ class Graph:
         '''
 
         path_nodes = []         # nodes that are n links away from vertex
-        seen = [:]              # dictionary of vertex and length that has been visited
+        seen = dict()           # dictionary of vertex and length that has been visited
         q = queue.Queue()       # queue of tuples of vertex and it's length
 
         # Push to the queue and update seen
@@ -144,37 +144,148 @@ class Graph:
 
         return path_nodes
 
+    def find_path(self, from_vert, to_vert, visited=None):
+        '''
+        returns a path from a given vertex to another given vertex. This will not give us the shortest path,
+        but rather just a random path that got chosen.
+        '''
+        # Make sure that both nodes from_vert and to_vert are actually in the graph
+        if from_vert not in self.vert_list.keys() or to_vert not in self.vert_list.keys():
+            print("No available vertices in this graph!")
+            return
+
+        # initializing the visited array for the first iteration
+        if visited == None:
+            visited = []
+
+        visited.append(from_vert)
+        # return true so we know that we've hit the end!! And this is where we're going to check
+        # the bool when we're updating the recursion call parameters down below.
+        if from_vert == to_vert:
+            return True
+
+        # loop through the neighbors of our current vertex and call make the recursion call with the neighbor vertex
+        for neighbor in from_vert.neighbors:
+            if neighbor not in visited:
+                if find_path(neighbor, to_vert, visited) == True:
+                    return visited
+
+        # No path within these vertices
+        return None
+
+    def find_shortest_path(self, src, dst):
+        '''
+        Returns the shortest path from a given vertex to another given vertex. This is an optimization from
+        the method above. We're adding a new property to our Vertex class named parent because we're breaking
+        down the graph into a tree looking form. And we return the shortest path by going up the tree!
+        '''
+        q = queue.Queue()       # where we perform bfs
+        seen = set()            # keeps track of seen vertices
+        path = []               # the path of vertices from from_vert to to_vert
+
+        # add to the queue
+        q.put(src)
+
+        while q:
+            curr = q.get()
+            seen.add(curr)
+
+            if curr == dst:
+                break
+
+            for neighbor in curr.neighbors:
+                if neighbor not in seen:
+                    q.put(neighbor)
+                    neighbor.parent = curr
+                if neighbor == dst:
+                    break
+
+        # loop so we can go up the tree from when we set the parents
+        node = dst
+        while node:
+            path.append(node.id)
+            node = node.parent
+
+        # after creting the path from the last up, we should return in reverse order so it
+        # goes from src to dst
+        return path[::-1]
+
+
+
 
     def __iter__(self):
         """Iterate over the vertex objects in the graph, to use sytax: for v in g"""
         return iter(self.vert_list.values())
 
 
-# Driver code
-
-
 if __name__ == "__main__":
 
-    # Challenge 1: Create the graph
-
+    # Create the graph
     g = Graph()
 
-    # Add your friends
-    g.add_vertex("Friend 1")
-    g.add_vertex("Friend 2")
-    g.add_vertex("Friend 3")
-
-    # ...  add all 10 including you ...
+    # Add friends (including myself)
+    g.add_vertex("Sarin")
+    g.add_vertex("AAA")
+    g.add_vertex("BBB")
+    g.add_vertex("CCC")
+    g.add_vertex("DDD")
+    g.add_vertex("EEE")
+    g.add_vertex("FFF")
+    g.add_vertex("GGG")
+    g.add_vertex("HHH")
+    g.add_vertex("III")
 
     # Add connections (non weighted edges for now)
-    g.add_edge("Friend 1", "Friend 2")
-    g.add_edge("Friend 2", "Friend 3")
+    g.add_edge("Sarin", "AAA")
+    g.add_edge("Sarin", "BBB")
+    g.add_edge("Sarin", "CCC")
+    g.add_edge("Sarin", "DDD")
+    g.add_edge("Sarin", "EEE")
+    g.add_edge("Sarin", "FFF")
+    g.add_edge("Sarin", "GGG")
+    g.add_edge("Sarin", "HHH")
+    g.add_edge("Sarin", "III")
 
-    # Challenge 1: Output the vertices & edges
-    # Print vertices
+    # All connections of my friend AAA:
+    g.add_edge("AAA", "III")
+    g.add_edge("AAA", "HHH")
+    g.add_edge("AAA", "FFF")
+
+    # All connections of my friend BBB:
+    g.add_edge("BBB", "CCC")
+
+    # All connections of my friend CCC:
+    g.add_edge("CCC", "BBB")
+
+    # All connections of my friend DDD:
+    g.add_edge("DDD", "III")
+
+    # All connections of my friend EEE:
+    g.add_edge("EEE", "FFF")
+
+    # All connections of my friend FFF:
+    g.add_edge("FFF", "EEE")
+    g.add_edge("FFF", "AAA")
+    g.add_edge("FFF", "GGG")
+
+    # All connections of my friend GGG:
+    g.add_edge("GGG", "FFF")
+
+    # All connections of my friend HHH:
+    g.add_edge("HHH", "AAA")
+
+    # All connections of my friend III:
+    g.add_edge("III", "AAA")
+    g.add_edge("III", "DDD")
+
+    print("finding path")
+    print(g.find_path(g.vert_list["Sarin"], g.vert_list["AAA"]))
+
+    # Output the vertices & edges
+    # vertices:
     print("The vertices are: ", g.get_vertices())
 
-    # Print edges
+    # edges:
     print("The edges are: ")
     for v in g:
         for w in v.get_neighbors():
